@@ -1,0 +1,10 @@
+EMV x Priori Uniforme
+
+Caso 1 
+	Comparar a convergencia com valores de transição perto de .5
+
+Caso 2
+	Uma das linhas mais extrema
+
+Caso 3
+	Duas linhas extremas

@@ -1,0 +1,3 @@
+- Implementar a dirichilet no caso 3x3 com todos os valores positivos
+- Usar a moda como estimativa
+- Usar o optimizing no objeto do stan
