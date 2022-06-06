@@ -42,3 +42,26 @@ convergencia.markov <- function(n, # número de interações
   
 }
 
+#Função que amostra valores de uma posteriori com priori beta ou kumaraswamy
+stan_markov <- function(priori, #priori escolhida (beta ou kumaraswamy)
+                        markov.chain, #objeto markov.chain com as transições do processo
+                        a, b, #hiperparâmetros da posteriori 
+                        chains = 1, #número de cadeias a serem utilizadas
+                        seed = Sys.time() #semente aleatória
+                        ) {
+  
+  data.stan <- list(N = sum(markov.chain$transitions[1,]),
+                    y = markov.chain$transitions[1,1],
+                    a = a,
+                    b = b)
+  
+  N = data.stan$N
+  
+  switch(priori,
+         beta = stan(file = 'stan files/beta.stan',data = data.stan, 
+                     chains = chains, seed = seed, iter = N*2),
+         kumaraswamy = stan(file = 'stan files/kuma.stan', data = data.stan, 
+                            chains = chains, seed = seed, iter = N*2)
+  )
+  
+}

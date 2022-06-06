@@ -10,8 +10,8 @@ options(mc.cores = parallel::detectCores())
 
 estados <- letters[1:2] #os estados devem ser caracteres
 
-p <- 0.45
-transicao <- matrix(c(0.45, 0.55,
+p <- 0.1
+transicao <- matrix(c(p, 1-p,
                       0.57, 0.43), nrow = 2, byrow = T)
 
 caso1 <- new('markovchain', 
@@ -36,19 +36,19 @@ abline(h = p, col = 'red', lty = 2) #valor real da probabilidade
 ## Inferência Bayesiana ----
 ### Binomial-beta ----
 set.seed(1)
-(data.stan <- list(N = 50,
-                   y = rbinom(50, 50, p),
-                   a = 2, 
-                   b = 3))
+(data.stan <- list(N = 1,
+                   y = rbinom(1, 200, p),
+                   a = 1, 
+                   b = 1))
 
 caso1.2x2.stan.beta <- stan(file = 'stan files/beta.stan', 
-                   data = data.stan, chains = 4, seed = 1, iter = N*4)
+                   data = data.stan, chains = 1, seed = 1, iter = N*2)
 
 
 df1 <- tibble(caso1.2x2.stan.beta %>% as.data.frame()) %>% 
   mutate(pm = cumsum(p)/1:N)
 
-plot(1:N, df1$pm, type = 'l', ylim = c(p-.2,p+.2),
+plot(1:2000, df1$pm, type = 'l', ylim = c(0,1),
      main = 'Inferência Bayesiana da probabilidade de transição')
 abline(h = p, col = 'red', lty = 2)
 
