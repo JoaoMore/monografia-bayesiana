@@ -36,19 +36,20 @@ convergencia.markov <- function(n, # número de interações
   
   value <- list(runs = runs, estimate = estimate, 
                 iterations = iterations, transitions = transitions,
-                probability_matrix = probability_matrix)
+                probability_matrix = probability_matrix,
+                chain = markov.chain)
   
   invisible(value)
   
 }
 
-#Função que amostra valores de uma posteriori com priori beta ou kumaraswamy
+# Função que amostra valores de uma posteriori com priori beta ou kumaraswamy
 stan_markov <- function(priori, #priori escolhida (beta ou kumaraswamy)
                         markov.chain, #objeto markov.chain com as transições do processo
                         a, b, #hiperparâmetros da posteriori 
                         chains = 1, #número de cadeias a serem utilizadas
-                        seed = Sys.time() #semente aleatória
-                        ) {
+                        seed = sample.int(.Machine$integer.max, 1) #semente aleatória
+) {
   
   data.stan <- list(N = sum(markov.chain$transitions[1,]),
                     y = markov.chain$transitions[1,1],
@@ -63,5 +64,30 @@ stan_markov <- function(priori, #priori escolhida (beta ou kumaraswamy)
          kumaraswamy = stan(file = 'stan files/kuma.stan', data = data.stan, 
                             chains = chains, seed = seed, iter = N*2)
   )
+  
+}
+
+# Função que compara a convergência dos modelos clássico e bayesiano
+model.diag <- function(stan.model, #modelo stan
+                       markov.model #modelo clássico 
+) {
+  
+  prob <- markov.model$chain@transitionMatrix[1,1]
+  i <- sum(markov.model$transitions[1,])
+  p <- stan.model@sim[["samples"]][[1]][["p"]][(i+1):(i*2)]
+  
+  df <- tibble(media = (cumsum(p)/(1:i)), i = (1:i))
+  
+  par(mfrow = c(1,2))
+  
+  {plot(phat ~ it, data = markov.model$estimate, type = 'l',  ylim = c(prob-.1,prob+.1),
+        main = 'Método Clássico', 
+        xlab = 'Iterações', ylab = 'Estimativa')
+    abline(h = prob, col = 'red', lty = 2)}
+  
+  {plot(media ~ i, data = df, type = 'l', ylim = c(prob-.1, prob+.1), 
+        main = 'Método Bayesiano', 
+        xlab = 'Iterações', ylab = 'Estimativa')
+    abline(h = prob, col = 'red', lty = 2)}
   
 }
