@@ -127,16 +127,16 @@ caso2.3x3.df <- tibble(p = numeric(),
 
 for (i in 1:18) {
   model <- stan_markov(priori = df$prior[i], 
-                       markov.chain = caso1.3x3, 
+                       markov.chain = caso2.3x3, 
                        a = df$a[i], b = df$b[i], chains = 1)
   
   t <- summary(model)
   
   name <- 
-    paste('caso1.3x3', '.a', df$a[i], '.b', df$b[i], '.', df$prior[i], sep = '')
+    paste('caso2.3x3', '.a', df$a[i], '.b', df$b[i], '.', df$prior[i], sep = '')
   
   
-  temp <- tibble(p = caso1.3x3$chain@transitionMatrix[1,1], 
+  temp <- tibble(p = caso2.3x3$chain@transitionMatrix[1,1], 
                  priori = df$prior[i], 
                  alfa = df$a[i], 
                  beta = df$b[i],
@@ -201,16 +201,16 @@ caso3.3x3.df <- tibble(p = numeric(),
 
 for (i in 1:18) {
   model <- stan_markov(priori = df$prior[i], 
-                       markov.chain = caso1.3x3, 
+                       markov.chain = caso3.3x3, 
                        a = df$a[i], b = df$b[i], chains = 1)
   
   t <- summary(model)
   
   name <- 
-    paste('caso1.3x3', '.a', df$a[i], '.b', df$b[i], '.', df$prior[i], sep = '')
+    paste('caso3.3x3', '.a', df$a[i], '.b', df$b[i], '.', df$prior[i], sep = '')
   
   
-  temp <- tibble(p = caso1.3x3$chain@transitionMatrix[1,1], 
+  temp <- tibble(p = caso3.3x3$chain@transitionMatrix[1,1], 
                  priori = df$prior[i], 
                  alfa = df$a[i], 
                  beta = df$b[i],
